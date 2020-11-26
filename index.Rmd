@@ -19,7 +19,8 @@ output: html_document
 
 # **Brian Forristal's Portfolio**
 
-This is a template example for lab journaling. Students in Matt Crump's Human Cognition and Performance Lab will use this template to learn R, and other things. Students can replace this text with more fun things. People not in my lab can use this too.
+Welcome to my personal website where I host my personal R projects. While studying at the University of
+Pittsburgh, through directed learning in courses and for fun in my personal time, I've developed my skills in statistics, data science, and coding. Have fun looking through my journey in data science and statistics.
 
 ## How to use
 
