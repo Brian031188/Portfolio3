@@ -16,15 +16,26 @@ knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 
 2020 | 11 | 26 Last compiled: `r Sys.Date()`
 
-# Histogram
-This is a test of modifying code
+# Data
+Generating random data.
 ```{r}
 x = rnorm(1000, 0, 1)
 y = rnorm(1000, 1.5, 0.1)
 z = x*y
-plot(x, y)
-plot(x, z)
+```
+
+# Histogram
+This is a test of modifying code.
+```{r}
 hist(z)
 ```
+
+# Plots
+Look how cool the plots look.
+```{r}
+plot(x, y)
+plot(x, z)
+```
+
 
 
