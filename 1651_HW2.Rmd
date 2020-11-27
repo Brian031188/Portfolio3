@@ -1,5 +1,5 @@
 ---
-title: "1651_HW2"
+title: "Bayesian Statistics"
 output:
   html_document:
     toc: true
