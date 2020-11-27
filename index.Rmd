@@ -22,23 +22,21 @@ output: html_document
 Welcome to my personal website where I host my personal R projects. While studying at the University of
 Pittsburgh, through directed learning in courses and for fun in my personal time, I've developed my skills in statistics, data science, and coding. Have fun looking through my journey in data science and statistics.
 
-## How to use
+## Goals
+1. Be the best dad I can be :)
+2. Hoping to find a meaningful job in data science and statistics where I can make positive change.
+3. Change the world!
 
-1. fork the repo for this website and follow instructions on read me to get set up. [https://github.com/CrumpLab/LabJournalWebsite](https://github.com/CrumpLab/LabJournalWebsite)
+### [LinkedIn profile](https://www.linkedin.com/in/brian-forristal-b84088a6/)
 
-2. Blog/journal what you are doing in R, by editing the Journal.Rmd. See the [Journal page](https://crumplab.github.io/LabJournalWebsite/Journal.html) for an example of what to do to get started learning R.
-
-3. See the [links page](https://crumplab.github.io/LabJournalWebsite/Links.html) for lots of helpful links on learning R.
-
-4. Change everything to make it your own.
 
 
 </div>
 <div class="col-sm-6">
 
-### [Crump Lab: Human Cognition and Performance](https://crumplab.github.io)
+### My Daughter, Sofia Mae Forristal
 
 <a href = "https://crumplab.github.io">
-![](images/logo.png)
+![](images/WebsitePic.png)
 </a>
 </div>
