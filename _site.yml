@@ -5,7 +5,7 @@ navbar:
     - text: "Home"
       href: index.html
     - text: "Rbasics"
-      href: Journal.html
+      href: Rbasics.html
     - text: "Bayesian Statistics"
       href: 1651_HW2.html
 output_dir: "docs"
