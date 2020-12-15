@@ -1,0 +1,337 @@
+---
+title: "Database Management"
+output: html_document
+---
+
+
+I began developing my database management skills during my internship with Ernst & Young (EY) during the summer of 2020. Given opportunities to complete self-directed learning objectives between meetings, project work, or networking calls, I focused my time and energy on a SQL bootcamp, from the Udemy learning site, which focused primarily on PostgresSQL. I earned an EY Intern badge in Data Integration upon completing the learning module. During the proceeding fall semester, I further honed my skills in a database management course from the Information Sciences Department at the University of Pittsburgh. 
+
+All of the course work was done in SQL. Course objectives included: designing data models, ER diagrams, SQL query logic, complex SQL query statements with many joins, database optimization, normalization, indexing, and user and security considerations. 
+
+To demonstrate my understanding of these fundamentals, the below sections will be of the final project I created, individually, originally code in SQL but now in PostgresSQL embedded in R for illustrative purposes. 
+
+## Description
+URL LINK TO PROJECT DOCUMENT
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+library(glue)
+library(RPostgreSQL)
+library(RPostgres)
+library(DBI)
+library(tidyverse)
+library(tidyquant)
+library(lubridate)
+
+```
+
+After initialized the new database in pgAdmin 4, PostgresSQL's user interface, the embedded SQL code below will create tables (entities), variables (attributes) with appropriate data types, and foreign-key relationships. 
+
+### Create Database and Tables
+First, connect Rstudio to the recently created database then begin creating each table. It is critical to remember that tables with foreign keys must be created after the table containing the respective primary key.
+```{r, warning = FALSE, echo = T, results = 'hide'}
+
+drv <- RPostgreSQL::PostgreSQL()
+con <- DBI::dbConnect(drv, dbname = 'Investments', user = 'postgres', 
+                      host = 'localhost', port = 5432, password = 'password')
+
+dbSendQuery(con, "CREATE TABLE country(
+country_id SERIAL PRIMARY KEY,
+country VARCHAR(50))"
+)
+
+dbSendQuery(con, "CREATE TABLE city(
+city_id SERIAL PRIMARY KEY,
+city VARCHAR(50),
+fk_country_id int,
+FOREIGN KEY (fk_country_id) REFERENCES country(country_id)
+)")
+
+dbSendQuery(con, "CREATE TABLE address(
+address_id SERIAL PRIMARY KEY,
+address VARCHAR(50),
+fk_city_id INT,
+zipcode VARCHAR(5),
+FOREIGN KEY (fk_city_id) REFERENCES city(city_id)
+)")
+
+dbSendQuery(con, "CREATE TABLE investment_firm(
+firm_id SERIAL PRIMARY KEY,
+firm_name VARCHAR(100)
+)")
+
+dbSendQuery(con, "CREATE TABLE fund_manager(
+manager_id SERIAL PRIMARY KEY,
+fk_firm_id INT,
+first_name VARCHAR(20),
+last_name VARCHAR(20),
+age INT,
+years_of_experience INT,
+FOREIGN KEY (fk_firm_id) REFERENCES investment_firm(firm_id)
+)")
+
+dbSendQuery(con, "CREATE TABLE fund(
+fund_id SERIAL PRIMARY KEY,
+fk_manager_id INT,
+fund_type VARCHAR(45),
+amount REAL,
+FOREIGN KEY (fk_manager_id) REFERENCES fund_manager(manager_id)
+)")
+
+
+dbSendQuery(con, "CREATE TABLE decision_rule(
+decision_id SERIAL PRIMARY KEY,
+name VARCHAR(50),
+type VARCHAR(50)
+)")
+
+dbSendQuery(con, "CREATE TABLE factor(
+factor_id SERIAL PRIMARY KEY,
+factor_type VARCHAR(25),
+influence_weight REAL
+)")
+
+dbSendQuery(con, "CREATE TABLE decision_factor(
+decision_factor_id SERIAL PRIMARY KEY,
+fk_decision_rule_id INT,
+fk_factor_id INT, 
+week INT,
+FOREIGN KEY (fk_decision_rule_id) REFERENCES decision_rule(decision_id),
+FOREIGN KEY (fk_factor_id) REFERENCES factor(factor_id)
+)")
+
+dbSendQuery(con, "CREATE TABLE performance(
+week INT,
+fk_fund_id INT,
+fk_decision_id INT,
+weekly_return REAL,
+FOREIGN KEY (fk_fund_id) REFERENCES fund(fund_id),
+FOREIGN KEY (fk_decision_id) REFERENCES decision_rule(decision_id)
+)")
+
+```
+### Import Data
+For this database all the data was created in R for efficiency and reproducibility. Table sizes range from a minimum of just under 10 rows to as many as 52,000. For generating data for the performance table, the returns attribute was randomly simulated with a normal distribution, and many of the remaining tables had integer values randomly simulated with a binomial distribution. Now import the data with the following SQL code.
+```{r, warning = FALSE, echo = T, results = 'hide'}
+
+df = read.csv("DB_country_data.csv")
+df = df %>% select(country)
+dbWriteTable(con, "country", value = df, append = T, row.names = FALSE)
+
+df = read.csv("DB_city_data.csv")
+df = df[,-1]
+dbWriteTable(con, "city", value = df, append = T, row.names = FALSE)
+
+df = read.csv("DB_address_data.csv")
+df = df[,-1]
+dbWriteTable(con, "address", value = df, append = T, row.names = FALSE)
+
+df = read.csv("DB_investment_firm_data.csv")
+df = df %>% select(firm_name)
+dbWriteTable(con, "investment_firm", value = df, append = T, row.names = FALSE)
+
+df = read.csv("DB_fund_manager_data.csv")
+df = df[,-1]
+dbWriteTable(con, "fund_manager", value = df, append = T, row.names = FALSE)
+
+df = read.csv("DB_fund_data.csv")
+df = df[,-1]
+dbWriteTable(con, "fund", value = df, append = T, row.names = FALSE)
+
+df = read.csv("DB_decision_rule.csv")
+df = df[,-1]
+dbWriteTable(con, "decision_rule", value = df, append = T, row.names = FALSE)
+
+df = read.csv("DB_factor_data.csv")
+df = df[,-1]
+dbWriteTable(con, "factor", value = df, append = T, row.names = FALSE)
+
+df = read.csv("DB_decision_factor_data.csv")
+df = df[,-1]
+dbWriteTable(con, "decision_factor", value = df, append = T, row.names = FALSE)
+
+df = read.csv("DB_performance.csv")
+df = df[,-1]
+dbWriteTable(con, "performance", value = df, append = T, row.names = FALSE)
+
+```
+
+### Data Verification
+The following SQL queries are to very the data were imported properly.
+```{r}
+query = dbSendQuery(con, "SELECT * FROM country")
+df = dbFetch(query)
+df
+
+query = dbSendQuery(con, "SELECT * FROM city")
+df = dbFetch(query)
+df
+
+query = dbSendQuery(con, "SELECT * FROM factor")
+df = dbFetch(query)
+df
+
+query = dbSendQuery(con, "SELECT * FROM decision_factor")
+df = dbFetch(query)
+head(df, 10)
+dim(df)
+
+query = dbSendQuery(con, "SELECT * FROM city")
+df = dbFetch(query)
+head(df, 10)
+dim(df)
+
+query = dbSendQuery(con, "SELECT * FROM performance")
+df = dbFetch(query)
+head(df, 10)
+dim(df)
+
+query = dbSendQuery(con, "SELECT * FROM address")
+df = dbFetch(query)
+df
+
+query = dbSendQuery(con, "SELECT * FROM investment_firm")
+df = dbFetch(query)
+df
+
+query = dbSendQuery(con, "SELECT * FROM fund_manager")
+df = dbFetch(query)
+head(df, 10)
+dim(df)
+
+query = dbSendQuery(con, "SELECT * FROM fund")
+df = dbFetch(query)
+head(df, 10)
+dim(df)
+
+query = dbSendQuery(con, "SELECT * FROM decision_rule")
+df = dbFetch(query)
+df
+
+```
+
+### Complex Queries
+Finally, perform several complex queries to demonstrate the usefulness and feasibility of the database.
+
+#### Query 1
+1 On average, how many years of experience does a fund manager have and on average what is their age? 
+```{r}
+query = dbSendQuery(con, "SELECT AVG(age) AS avg_age, AVG(years_of_experience) AS avg_work_experience FROM fund_manager")
+result = dbFetch(query)
+result
+
+```
+
+#### Query 2
+What is the distribution of funds per fund manager?
+```{r}
+
+query = dbSendQuery(con, "SELECT fk_manager_id, COUNT(fund_id) FROM fund
+JOIN fund_manager
+ON fund.fk_manager_id = fund_manager.manager_id
+GROUP BY (fk_manager_id)
+ORDER BY (fk_manager_id)")
+result = dbFetch(query)
+head(result, 10)
+
+```
+
+#### Query 3
+How many millions of dollars does each investment firm start out with culmulatively for the year?
+```{r}
+query = dbSendQuery(con, "SELECT firm_name, SUM(amount) AS millions FROM investment_firm
+JOIN fund_manager
+ON investment_firm.firm_id = fund_manager.fk_firm_id
+JOIN fund
+ON fund_manager.manager_id = fund.fk_manager_id
+GROUP BY (firm_id)
+ORDER BY (SUM(amount)) DESC")
+result = dbFetch(query)
+result
+
+```
+
+#### Query 4
+What was the top 10 funds for average rate of weekly return?
+```{r}
+query = dbSendQuery(con, "SELECT fk_fund_id, AVG(weekly_return) FROM performance
+JOIN fund
+ON fund.fund_id = performance.fk_fund_id 
+JOIN fund_manager
+ON fund.fk_manager_id = fund_manager.manager_id
+GROUP BY(fk_fund_id)
+ORDER BY(AVG(weekly_return)) DESC
+LIMIT 10")
+result = dbFetch(query)
+result
+
+```
+
+#### Query 5
+Which fund, during which week, had the highest weekly return? Include the week, the fund_id, the managers name, and the value of the weekly return.
+```{r}
+query = dbSendQuery(con, "SELECT week, fk_fund_id, fund_manager.first_name, fund_manager.last_name, weekly_return FROM performance
+JOIN fund
+ON fund.fund_id = performance.fk_fund_id
+JOIN fund_manager
+ON fund_manager.manager_id = fund.fk_manager_id
+ORDER BY weekly_return DESC
+LIMIT 1")
+result = dbFetch(query)
+result
+
+```
+
+#### Query 6
+Which factors were utilized the most?
+```{r}
+query = dbSendQuery(con, "SELECT fk_factor_id, factor_type, COUNT(fk_factor_id) AS count FROM decision_factor
+JOIN factor
+ON factor.factor_id = decision_factor.fk_factor_id
+GROUP BY (fk_factor_id, factor_type)
+ORDER BY (COUNT(fk_factor_id)) DESC;")
+result = dbFetch(query)
+result
+
+```
+
+### Next Steps
+The fundamentals of creating a database from scratch with all the required components is a valuable skill. In the proceeding example, complex SQL queries will extract data from a real-world database then a machine learning analysis will be conducted. 
+
+
+
+```{r, include=FALSE}
+## Use for latter
+# 
+# # 7 Of the decision rules, what was their performance to weekly returns? 
+# SELECT fk_decision_id AS decision_rule, AVG(weekly_return) AS avg_return, name, type, description FROM performance
+# INNER JOIN decision_rule
+# ON decision_rule.decision_id = performance.fk_decision_id
+# GROUP BY (fk_decision_id)
+# ORDER BY (AVG(weekly_return)) DESC;
+# 
+# # 8 Decision rule 6 outperformed the set, what factors were most utilized?
+# SELECT fk_factor_id, factor_type, COUNT(fk_factor_id) AS factor_count FROM decision_factor 
+# LEFT JOIN factor
+# ON factor.factor_id = decision_factor.fk_factor_id
+# WHERE fk_decision_rule_id = 6
+# GROUP BY (fk_factor_id)
+# ORDER BY (COUNT(fk_factor_id)) DESC;
+# 
+# # 9 Redue the query from # 8 but with a subquery and IN predicate. 
+# SELECT fk_factor_id, factor_type, COUNT(fk_factor_id) AS factor_count FROM decision_factor
+# JOIN factor
+# ON factor.factor_id = decision_factor.fk_factor_id
+# WHERE decision_factor.fk_decision_rule_id IN(SELECT decision_id FROM decision_rule WHERE decision_id = 6)
+# GROUP BY (fk_factor_id)
+# ORDER BY (COUNT(fk_factor_id)) DESC;
+# 
+# # 10 What is the average employee count and average employee tenure by firm?
+# SELECT firm_name, AVG(manager_id) AS avg_num_managers, AVG(years_of_experience) AS avg_manager_exp FROM fund_manager
+# JOIN investment_firm
+# ON fund_manager.fk_firm_id = investment_firm.firm_id
+# GROUP BY (firm_id);
+```
+

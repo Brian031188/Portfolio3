@@ -6,6 +6,8 @@ navbar:
       href: index.html
     - text: "Rbasics"
       href: Rbasics.html
+    - text: "Database Management Fundamentals"
+      href: Database_Management.html
     - text: "Bayesian Statistics"
       href: 1651_HW2.html
 output_dir: "docs"

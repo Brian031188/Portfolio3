@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Database Management</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Brian's F's Site</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Rbasics.html">Rbasics</a>
+</li>
+<li>
+  <a href="1651_HW2.html">Bayesian Statistics</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Database Management</h1>
+
+</div>
+
+
+<p>I began developing my database management skills during my internship with Ernst &amp; Young (EY) during the summer of 2020. Given opportunities to complete self-directed learning objectives between meetings, project work, or networking calls, I focused my time and energy on a SQL bootcamp, from the Udemy learning site, which focused primarily on PostgresSQL. I earned an EY Intern badge in Data Integration upon completing the learning module. During the proceeding fall semester, I further honed my skills in a database management course from the Information Sciences Department at the University of Pittsburgh.</p>
+<p>All of the course work was done in SQL. Course objectives included: designing data models, ER diagrams, SQL query logic, complex SQL query statements with many joins, database optimization, normalization, indexing, and user and security considerations.</p>
+<p>To demonstrate my understanding of these fundamentals, the below sections will be of the final project I created, individually, originally code in SQL but now in PostgresSQL embedded in R for illustrative purposes.</p>
+<div id="description" class="section level2">
+<h2>Description</h2>
+<p>URL LINK TO PROJECT DOCUMENT</p>
+<p>After initialized the new database in pgAdmin 4, PostgresSQL’s user interface, the embedded SQL code below will create tables (entities), variables (attributes) with appropriate data types, and foreign-key relationships.</p>
+<div id="create-database-and-tables" class="section level3">
+<h3>Create Database and Tables</h3>
+<p>First, connect Rstudio to the recently created database then begin creating each table. It is critical to remember that tables with foreign keys must be created after the table containing the respective primary key.</p>
+<pre class="r"><code>drv &lt;- RPostgreSQL::PostgreSQL()
+con &lt;- DBI::dbConnect(drv, dbname = &#39;Investments&#39;, user = &#39;postgres&#39;, 
+                      host = &#39;localhost&#39;, port = 5432, password = &#39;password&#39;)
+
+dbSendQuery(con, &quot;CREATE TABLE country(
+country_id SERIAL PRIMARY KEY,
+country VARCHAR(50))&quot;
+)
+
+dbSendQuery(con, &quot;CREATE TABLE city(
+city_id SERIAL PRIMARY KEY,
+city VARCHAR(50),
+fk_country_id int,
+FOREIGN KEY (fk_country_id) REFERENCES country(country_id)
+)&quot;)
+
+dbSendQuery(con, &quot;CREATE TABLE address(
+address_id SERIAL PRIMARY KEY,
+address VARCHAR(50),
+fk_city_id INT,
+zipcode VARCHAR(5),
+FOREIGN KEY (fk_city_id) REFERENCES city(city_id)
+)&quot;)
+
+dbSendQuery(con, &quot;CREATE TABLE investment_firm(
+firm_id SERIAL PRIMARY KEY,
+firm_name VARCHAR(100)
+)&quot;)
+
+dbSendQuery(con, &quot;CREATE TABLE fund_manager(
+manager_id SERIAL PRIMARY KEY,
+fk_firm_id INT,
+first_name VARCHAR(20),
+last_name VARCHAR(20),
+age INT,
+years_of_experience INT,
+FOREIGN KEY (fk_firm_id) REFERENCES investment_firm(firm_id)
+)&quot;)
+
+dbSendQuery(con, &quot;CREATE TABLE fund(
+fund_id SERIAL PRIMARY KEY,
+fk_manager_id INT,
+fund_type VARCHAR(45),
+amount REAL,
+FOREIGN KEY (fk_manager_id) REFERENCES fund_manager(manager_id)
+)&quot;)
+
+
+dbSendQuery(con, &quot;CREATE TABLE decision_rule(
+decision_id SERIAL PRIMARY KEY,
+name VARCHAR(50),
+type VARCHAR(50)
+)&quot;)
+
+dbSendQuery(con, &quot;CREATE TABLE factor(
+factor_id SERIAL PRIMARY KEY,
+factor_type VARCHAR(25),
+influence_weight REAL
+)&quot;)
+
+dbSendQuery(con, &quot;CREATE TABLE decision_factor(
+decision_factor_id SERIAL PRIMARY KEY,
+fk_decision_rule_id INT,
+fk_factor_id INT, 
+week INT,
+FOREIGN KEY (fk_decision_rule_id) REFERENCES decision_rule(decision_id),
+FOREIGN KEY (fk_factor_id) REFERENCES factor(factor_id)
+)&quot;)
+
+dbSendQuery(con, &quot;CREATE TABLE performance(
+week INT,
+fk_fund_id INT,
+fk_decision_id INT,
+weekly_return REAL,
+FOREIGN KEY (fk_fund_id) REFERENCES fund(fund_id),
+FOREIGN KEY (fk_decision_id) REFERENCES decision_rule(decision_id)
+)&quot;)</code></pre>
+</div>
+<div id="import-data" class="section level3">
+<h3>Import Data</h3>
+<p>For this database all the data was created in R for efficiency and reproducibility. Table sizes range from a minimum of just under 10 rows to as many as 52,000. For generating data for the performance table, the returns attribute was randomly simulated with a normal distribution, and many of the remaining tables had integer values randomly simulated with a binomial distribution. Now import the data with the following SQL code.</p>
+<pre class="r"><code>df = read.csv(&quot;DB_country_data.csv&quot;)
+df = df %&gt;% select(country)
+dbWriteTable(con, &quot;country&quot;, value = df, append = T, row.names = FALSE)
+
+df = read.csv(&quot;DB_city_data.csv&quot;)
+df = df[,-1]
+dbWriteTable(con, &quot;city&quot;, value = df, append = T, row.names = FALSE)
+
+df = read.csv(&quot;DB_address_data.csv&quot;)
+df = df[,-1]
+dbWriteTable(con, &quot;address&quot;, value = df, append = T, row.names = FALSE)
+
+df = read.csv(&quot;DB_investment_firm_data.csv&quot;)
+df = df %&gt;% select(firm_name)
+dbWriteTable(con, &quot;investment_firm&quot;, value = df, append = T, row.names = FALSE)
+
+df = read.csv(&quot;DB_fund_manager_data.csv&quot;)
+df = df[,-1]
+dbWriteTable(con, &quot;fund_manager&quot;, value = df, append = T, row.names = FALSE)
+
+df = read.csv(&quot;DB_fund_data.csv&quot;)
+df = df[,-1]
+dbWriteTable(con, &quot;fund&quot;, value = df, append = T, row.names = FALSE)
+
+df = read.csv(&quot;DB_decision_rule.csv&quot;)
+df = df[,-1]
+dbWriteTable(con, &quot;decision_rule&quot;, value = df, append = T, row.names = FALSE)
+
+df = read.csv(&quot;DB_factor_data.csv&quot;)
+df = df[,-1]
+dbWriteTable(con, &quot;factor&quot;, value = df, append = T, row.names = FALSE)
+
+df = read.csv(&quot;DB_decision_factor_data.csv&quot;)
+df = df[,-1]
+dbWriteTable(con, &quot;decision_factor&quot;, value = df, append = T, row.names = FALSE)
+
+df = read.csv(&quot;DB_performance.csv&quot;)
+df = df[,-1]
+dbWriteTable(con, &quot;performance&quot;, value = df, append = T, row.names = FALSE)</code></pre>
+</div>
+<div id="data-verification" class="section level3">
+<h3>Data Verification</h3>
+<p>The following SQL queries are to very the data were imported properly.</p>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM country&quot;)
+df = dbFetch(query)
+df</code></pre>
+<pre><code>##   country_id       country
+## 1          1 United States
+## 2          2 Great Britain
+## 3          3        France
+## 4          4         Spain
+## 5          5     Hong Kong</code></pre>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM city&quot;)
+df = dbFetch(query)
+df</code></pre>
+<pre><code>##   city_id      city fk_country_id
+## 1       1   Chicago             1
+## 2       2  New York             1
+## 3       3     Paris             3
+## 4       4  Westport             1
+## 5       5 Greenwich             1
+## 6       6     Omaha             1
+## 7       7    London             2</code></pre>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM factor&quot;)
+df = dbFetch(query)
+df</code></pre>
+<pre><code>##   factor_id        factor_type influence_weight
+## 1         1  Twitter_Sentiment        0.1666667
+## 2         2 Facebook_Sentiment        0.1666667
+## 3         3      News Articles        0.1666667
+## 4         4 Television Reports        0.1666667
+## 5         5      Print Article        0.1666667
+## 6         6   Survey Responses        0.1666667</code></pre>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM decision_factor&quot;)
+df = dbFetch(query)
+head(df, 10)</code></pre>
+<pre><code>##    decision_factor_id fk_decision_rule_id fk_factor_id week
+## 1                   1                   4            6   28
+## 2                   2                   4            4    2
+## 3                   3                   2            2   37
+## 4                   4                   4            4   31
+## 5                   5                   6            6   28
+## 6                   6                   6            3   43
+## 7                   7                   5            2    3
+## 8                   8                   7            4   27
+## 9                   9                   4            4    1
+## 10                 10                   9            1   34</code></pre>
+<pre class="r"><code>dim(df)</code></pre>
+<pre><code>## [1] 10000     4</code></pre>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM city&quot;)
+df = dbFetch(query)
+head(df, 10)</code></pre>
+<pre><code>##   city_id      city fk_country_id
+## 1       1   Chicago             1
+## 2       2  New York             1
+## 3       3     Paris             3
+## 4       4  Westport             1
+## 5       5 Greenwich             1
+## 6       6     Omaha             1
+## 7       7    London             2</code></pre>
+<pre class="r"><code>dim(df)</code></pre>
+<pre><code>## [1] 7 3</code></pre>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM performance&quot;)
+df = dbFetch(query)
+head(df, 10)</code></pre>
+<pre><code>##    week fk_fund_id fk_decision_id weekly_return
+## 1     1          1              3         0.038
+## 2     1          2              4         0.000
+## 3     1          3              6        -0.088
+## 4     1          4              9         0.031
+## 5     1          5              3         0.129
+## 6     1          6              9         0.189
+## 7     1          7             10        -0.107
+## 8     1          8              7         0.005
+## 9     1          9              7         0.146
+## 10    1         10              2        -0.081</code></pre>
+<pre class="r"><code>dim(df)</code></pre>
+<pre><code>## [1] 52000     4</code></pre>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM address&quot;)
+df = dbFetch(query)
+df</code></pre>
+<pre><code>##    address_id               address fk_city_id zipcode
+## 1           1      1 Glendinning Pl          4    6880
+## 2           2           800 3rd Ave          2   10022
+## 3           3           452 5th Ave          2   10018
+## 4           4     2 Greenwich Plaza          5    6830
+## 5           5           100 6th Ave          2   10013
+## 6           6           666 5th Ave          2   10103
+## 7           7          40 W 57th St          2   10019
+## 8           8          57 E 52nd St          2   10022
+## 9           9        3555 Farnam St          6   68131
+## 10         10 131 South Dearborn St          1   60603</code></pre>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM investment_firm&quot;)
+df = dbFetch(query)
+df</code></pre>
+<pre><code>##    firm_id                firm_name
+## 1        1   Bridgewater Associates
+## 2        2 Renaissance Technologies
+## 3        3                Man Group
+## 4        4   AQR Capital Management
+## 5        5    Two Sigma Investments
+## 6        6    Millennium Management
+## 7        7       Elliott Management
+## 8        8                BlackRock
+## 9        9       Berkshire Hathaway
+## 10      10         Citadel Advisors</code></pre>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM fund_manager&quot;)
+df = dbFetch(query)
+head(df, 10)</code></pre>
+<pre><code>##    manager_id fk_firm_id first_name    last_name age years_of_experience
+## 1           1          1       Bill        Casey  40                   7
+## 2           2          2      Brian    Forristal  27                   6
+## 3           3          3       Ryan        Papac  30                   9
+## 4           4          4     Steven      Ruzzini  35                   9
+## 5           5          5       Matt       Kenyon  29                  10
+## 6           6          6      Fujin      Shimoda  38                  10
+## 7           7          7      Jesse      Ventura  41                   4
+## 8           8          8       Jane          Doe  31                   3
+## 9           9          9      Sofia          Mae  30                   5
+## 10         10         10      Tanya Dovidovskaya  25                   6</code></pre>
+<pre class="r"><code>dim(df)</code></pre>
+<pre><code>## [1] 20  6</code></pre>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM fund&quot;)
+df = dbFetch(query)
+head(df, 10)</code></pre>
+<pre><code>##    fund_id fk_manager_id    fund_type amount
+## 1        1             3    specialty   1.57
+## 2        2            19 fixed income   1.81
+## 3        3             7 money market   0.98
+## 4        4             6    specialty   1.31
+## 5        5             5    specialty   1.97
+## 6        6            13    specialty   1.29
+## 7        7            14 money market   2.15
+## 8        8             2       equity   2.47
+## 9        9            12       equity   2.13
+## 10      10            16 money market   1.65</code></pre>
+<pre class="r"><code>dim(df)</code></pre>
+<pre><code>## [1] 1000    4</code></pre>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT * FROM decision_rule&quot;)
+df = dbFetch(query)
+df</code></pre>
+<pre><code>##    decision_id          name        type
+## 1            1      High Low   High Risk
+## 2            2 Fastest Gains   High Risk
+## 3            3        Cowboy   High Risk
+## 4            4     No Losers Medium Risk
+## 5            5   Buy Buy Buy Medium Risk
+## 6            6    Pure Alpha Medium Risk
+## 7            7          Beta Medium Risk
+## 8            8         Gains    Low Risk
+## 9            9      Rich Guy    Low Risk
+## 10          10         Bliss    Low Risk</code></pre>
+</div>
+<div id="complex-queries" class="section level3">
+<h3>Complex Queries</h3>
+<p>Finally, perform several complex queries to demonstrate the usefulness and feasibility of the database.</p>
+<div id="query-1" class="section level4">
+<h4>Query 1</h4>
+<p>1 On average, how many years of experience does a fund manager have and on average what is their age?</p>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT AVG(age) AS avg_age, AVG(years_of_experience) AS avg_work_experience FROM fund_manager&quot;)
+result = dbFetch(query)
+result</code></pre>
+<pre><code>##   avg_age avg_work_experience
+## 1    36.9                5.35</code></pre>
+</div>
+<div id="query-2" class="section level4">
+<h4>Query 2</h4>
+<p>What is the distribution of funds per fund manager?</p>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT fk_manager_id, COUNT(fund_id) FROM fund
+JOIN fund_manager
+ON fund.fk_manager_id = fund_manager.manager_id
+GROUP BY (fk_manager_id)
+ORDER BY (fk_manager_id)&quot;)
+result = dbFetch(query)
+head(result, 10)</code></pre>
+<pre><code>##    fk_manager_id count
+## 1              1    16
+## 2              2    61
+## 3              3    43
+## 4              4    46
+## 5              5    53
+## 6              6    40
+## 7              7    65
+## 8              8    58
+## 9              9    51
+## 10            10    45</code></pre>
+</div>
+<div id="query-3" class="section level4">
+<h4>Query 3</h4>
+<p>How many millions of dollars does each investment firm start out with culmulatively for the year?</p>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT firm_name, SUM(amount) AS millions FROM investment_firm
+JOIN fund_manager
+ON investment_firm.firm_id = fund_manager.fk_firm_id
+JOIN fund
+ON fund_manager.manager_id = fund.fk_manager_id
+GROUP BY (firm_id)
+ORDER BY (SUM(amount)) DESC&quot;)
+result = dbFetch(query)
+result</code></pre>
+<pre><code>##                   firm_name millions
+## 1                 BlackRock   250.32
+## 2  Renaissance Technologies   246.05
+## 3                 Man Group   227.11
+## 4        Elliott Management   218.49
+## 5     Two Sigma Investments   214.03
+## 6    AQR Capital Management   204.72
+## 7     Millennium Management   190.82
+## 8        Berkshire Hathaway   177.66
+## 9          Citadel Advisors   151.23
+## 10   Bridgewater Associates   133.38</code></pre>
+</div>
+<div id="query-4" class="section level4">
+<h4>Query 4</h4>
+<p>What was the top 10 funds for average rate of weekly return?</p>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT fk_fund_id, AVG(weekly_return) FROM performance
+JOIN fund
+ON fund.fund_id = performance.fk_fund_id 
+JOIN fund_manager
+ON fund.fk_manager_id = fund_manager.manager_id
+GROUP BY(fk_fund_id)
+ORDER BY(AVG(weekly_return)) DESC
+LIMIT 10&quot;)
+result = dbFetch(query)
+result</code></pre>
+<pre><code>##    fk_fund_id        avg
+## 1          28 0.07823077
+## 2         431 0.07417308
+## 3         966 0.07261538
+## 4         949 0.07240385
+## 5         895 0.07065385
+## 6         144 0.06950000
+## 7         294 0.06942308
+## 8         362 0.06778846
+## 9         889 0.06605769
+## 10        446 0.06428846</code></pre>
+</div>
+<div id="query-5" class="section level4">
+<h4>Query 5</h4>
+<p>Which fund, during which week, had the highest weekly return? Include the week, the fund_id, the managers name, and the value of the weekly return.</p>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT week, fk_fund_id, fund_manager.first_name, fund_manager.last_name, weekly_return FROM performance
+JOIN fund
+ON fund.fund_id = performance.fk_fund_id
+JOIN fund_manager
+ON fund_manager.manager_id = fund.fk_manager_id
+ORDER BY weekly_return DESC
+LIMIT 1&quot;)
+result = dbFetch(query)
+result</code></pre>
+<pre><code>##   week fk_fund_id first_name last_name weekly_return
+## 1   36        901        Bob      Hope         0.411</code></pre>
+</div>
+<div id="query-6" class="section level4">
+<h4>Query 6</h4>
+<p>Which factors were utilized the most?</p>
+<pre class="r"><code>query = dbSendQuery(con, &quot;SELECT fk_factor_id, factor_type, COUNT(fk_factor_id) AS count FROM decision_factor
+JOIN factor
+ON factor.factor_id = decision_factor.fk_factor_id
+GROUP BY (fk_factor_id, factor_type)
+ORDER BY (COUNT(fk_factor_id)) DESC;&quot;)
+result = dbFetch(query)
+result</code></pre>
+<pre><code>##   fk_factor_id        factor_type count
+## 1            5      Print Article  2088
+## 2            4 Television Reports  1969
+## 3            2 Facebook_Sentiment  1953
+## 4            3      News Articles  1950
+## 5            1  Twitter_Sentiment  1040
+## 6            6   Survey Responses  1000</code></pre>
+</div>
+</div>
+<div id="next-steps" class="section level3">
+<h3>Next Steps</h3>
+<p>The fundamentals of creating a database from scratch with all the required components is a valuable skill. In the proceeding example, complex SQL queries will extract data from a real-world database then a machine learning analysis will be conducted.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
