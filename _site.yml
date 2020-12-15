@@ -1,6 +1,6 @@
 name: "Brian F's Site"
 navbar:
-  title: "Portfolio"
+  title: "Portfolio: Brian Forristal"
   left:
     - text: "Home"
       href: index.html
