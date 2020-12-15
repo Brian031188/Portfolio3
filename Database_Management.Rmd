@@ -1,21 +1,17 @@
 ---
 title: "Database Management"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 1
+    #code_folding: hide
 ---
 
-
-I began developing my database management skills during my internship with Ernst & Young (EY) during the summer of 2020. Given opportunities to complete self-directed learning objectives between meetings, project work, or networking calls, I focused my time and energy on a SQL bootcamp, from the Udemy learning site, which focused primarily on PostgresSQL. I earned an EY Intern badge in Data Integration upon completing the learning module. During the proceeding fall semester, I further honed my skills in a database management course from the Information Sciences Department at the University of Pittsburgh. 
-
-All of the course work was done in SQL. Course objectives included: designing data models, ER diagrams, SQL query logic, complex SQL query statements with many joins, database optimization, normalization, indexing, and user and security considerations. 
-
-To demonstrate my understanding of these fundamentals, the below sections will be of the final project I created, individually, originally code in SQL but now in PostgresSQL embedded in R for illustrative purposes. 
-
-## Description
-URL LINK TO PROJECT DOCUMENT
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
+knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 
 library(glue)
 library(RPostgreSQL)
@@ -26,6 +22,16 @@ library(tidyquant)
 library(lubridate)
 
 ```
+
+
+I began developing my database management skills during my internship with Ernst & Young (EY) during the summer of 2020. Given opportunities to complete self-directed learning objectives between meetings, project work, or networking calls, I focused my time and energy on a SQL bootcamp, from the Udemy learning site, which focused primarily on PostgresSQL. I earned an EY Intern badge in Data Integration upon completing the learning module. During the proceeding fall semester, I further honed my skills in a database management course from the Information Sciences Department at the University of Pittsburgh. 
+
+All of the course work was done in SQL. Course objectives included: designing data models, ER diagrams, SQL query logic, complex SQL query statements with many joins, database optimization, normalization, indexing, and user and security considerations. 
+
+To demonstrate my understanding of these fundamentals, the below sections will be of the final project I created, individually, originally code in SQL but now in PostgresSQL embedded in R for illustrative purposes. 
+
+## Description
+URL LINK TO PROJECT DOCUMENT
 
 After initialized the new database in pgAdmin 4, PostgresSQL's user interface, the embedded SQL code below will create tables (entities), variables (attributes) with appropriate data types, and foreign-key relationships. 
 

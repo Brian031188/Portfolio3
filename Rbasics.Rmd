@@ -14,8 +14,6 @@ output:
 knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 ```
 
-2020 | 11 | 26 Last compiled: `r Sys.Date()`
-
 # Data
 Generating random data.
 ```{r}
