@@ -24,7 +24,7 @@ output:
 <div class="row" style="padding-top: 30px;">
 <div class="col-sm-6">
 
-# **Brian Forristal's Portfolio**
+## Brian Forristal's Portfolio
 
 Welcome to my personal website where I host my personal R projects. While studying at the University of
 Pittsburgh, through directed learning in courses and for fun in my personal time, I've developed my skills in statistics, data science, and coding. Have fun looking through my journey in data science and statistics.
