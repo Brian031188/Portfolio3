@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -248,6 +251,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -255,6 +321,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -279,6 +355,9 @@ $(document).ready(function () {
 </li>
 <li>
   <a href="1651_HW2.html">Bayesian Statistics</a>
+</li>
+<li>
+  <a href="Database_Management.html">Database Management</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -314,29 +393,29 @@ con &lt;- DBI::dbConnect(drv, dbname = &#39;Investments&#39;, user = &#39;postgr
 dbSendQuery(con, &quot;CREATE TABLE country(
 country_id SERIAL PRIMARY KEY,
 country VARCHAR(50))&quot;
-)
-
-dbSendQuery(con, &quot;CREATE TABLE city(
+)</code></pre>
+<pre><code>## &lt;PostgreSQLResult&gt;</code></pre>
+<pre class="r"><code>dbSendQuery(con, &quot;CREATE TABLE city(
 city_id SERIAL PRIMARY KEY,
 city VARCHAR(50),
 fk_country_id int,
 FOREIGN KEY (fk_country_id) REFERENCES country(country_id)
-)&quot;)
-
-dbSendQuery(con, &quot;CREATE TABLE address(
+)&quot;)</code></pre>
+<pre><code>## &lt;PostgreSQLResult&gt;</code></pre>
+<pre class="r"><code>dbSendQuery(con, &quot;CREATE TABLE address(
 address_id SERIAL PRIMARY KEY,
 address VARCHAR(50),
 fk_city_id INT,
 zipcode VARCHAR(5),
 FOREIGN KEY (fk_city_id) REFERENCES city(city_id)
-)&quot;)
-
-dbSendQuery(con, &quot;CREATE TABLE investment_firm(
+)&quot;)</code></pre>
+<pre><code>## &lt;PostgreSQLResult&gt;</code></pre>
+<pre class="r"><code>dbSendQuery(con, &quot;CREATE TABLE investment_firm(
 firm_id SERIAL PRIMARY KEY,
 firm_name VARCHAR(100)
-)&quot;)
-
-dbSendQuery(con, &quot;CREATE TABLE fund_manager(
+)&quot;)</code></pre>
+<pre><code>## &lt;PostgreSQLResult&gt;</code></pre>
+<pre class="r"><code>dbSendQuery(con, &quot;CREATE TABLE fund_manager(
 manager_id SERIAL PRIMARY KEY,
 fk_firm_id INT,
 first_name VARCHAR(20),
@@ -344,39 +423,38 @@ last_name VARCHAR(20),
 age INT,
 years_of_experience INT,
 FOREIGN KEY (fk_firm_id) REFERENCES investment_firm(firm_id)
-)&quot;)
-
-dbSendQuery(con, &quot;CREATE TABLE fund(
+)&quot;)</code></pre>
+<pre><code>## &lt;PostgreSQLResult&gt;</code></pre>
+<pre class="r"><code>dbSendQuery(con, &quot;CREATE TABLE fund(
 fund_id SERIAL PRIMARY KEY,
 fk_manager_id INT,
 fund_type VARCHAR(45),
 amount REAL,
 FOREIGN KEY (fk_manager_id) REFERENCES fund_manager(manager_id)
-)&quot;)
-
-
-dbSendQuery(con, &quot;CREATE TABLE decision_rule(
+)&quot;)</code></pre>
+<pre><code>## &lt;PostgreSQLResult&gt;</code></pre>
+<pre class="r"><code>dbSendQuery(con, &quot;CREATE TABLE decision_rule(
 decision_id SERIAL PRIMARY KEY,
 name VARCHAR(50),
 type VARCHAR(50)
-)&quot;)
-
-dbSendQuery(con, &quot;CREATE TABLE factor(
+)&quot;)</code></pre>
+<pre><code>## &lt;PostgreSQLResult&gt;</code></pre>
+<pre class="r"><code>dbSendQuery(con, &quot;CREATE TABLE factor(
 factor_id SERIAL PRIMARY KEY,
 factor_type VARCHAR(25),
 influence_weight REAL
-)&quot;)
-
-dbSendQuery(con, &quot;CREATE TABLE decision_factor(
+)&quot;)</code></pre>
+<pre><code>## &lt;PostgreSQLResult&gt;</code></pre>
+<pre class="r"><code>dbSendQuery(con, &quot;CREATE TABLE decision_factor(
 decision_factor_id SERIAL PRIMARY KEY,
 fk_decision_rule_id INT,
 fk_factor_id INT, 
 week INT,
 FOREIGN KEY (fk_decision_rule_id) REFERENCES decision_rule(decision_id),
 FOREIGN KEY (fk_factor_id) REFERENCES factor(factor_id)
-)&quot;)
-
-dbSendQuery(con, &quot;CREATE TABLE performance(
+)&quot;)</code></pre>
+<pre><code>## &lt;PostgreSQLResult&gt;</code></pre>
+<pre class="r"><code>dbSendQuery(con, &quot;CREATE TABLE performance(
 week INT,
 fk_fund_id INT,
 fk_decision_id INT,
@@ -384,6 +462,7 @@ weekly_return REAL,
 FOREIGN KEY (fk_fund_id) REFERENCES fund(fund_id),
 FOREIGN KEY (fk_decision_id) REFERENCES decision_rule(decision_id)
 )&quot;)</code></pre>
+<pre><code>## &lt;PostgreSQLResult&gt;</code></pre>
 </div>
 <div id="import-data" class="section level3">
 <h3>Import Data</h3>
@@ -706,6 +785,8 @@ result</code></pre>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -738,6 +819,32 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

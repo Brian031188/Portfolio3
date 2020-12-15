@@ -10,7 +10,7 @@ output:
     #code_folding: hide
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 
 library(glue)
@@ -20,7 +20,6 @@ library(DBI)
 library(tidyverse)
 library(tidyquant)
 library(lubridate)
-
 ```
 
 
@@ -37,7 +36,7 @@ After initialized the new database in pgAdmin 4, PostgresSQL's user interface, t
 
 ### Create Database and Tables
 First, connect Rstudio to the recently created database then begin creating each table. It is critical to remember that tables with foreign keys must be created after the table containing the respective primary key.
-```{r, warning = FALSE, echo = T, results = 'hide'}
+```{r}
 
 drv <- RPostgreSQL::PostgreSQL()
 con <- DBI::dbConnect(drv, dbname = 'Investments', user = 'postgres', 
