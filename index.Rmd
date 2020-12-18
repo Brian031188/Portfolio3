@@ -22,7 +22,11 @@ output:
 
 ## Who am I?
 
-My name is Brian Forristal and welcome to my personal website. Here, I host various coding examples I've learned along the way to discovery data science and statistics applications. I am currently a full-time student at the University of Pittsburgh, a Marine Corps veteran, and father to ten-month old Sofia (picture left). Despite my major of statistics, I have focused my free time to learning integral components to the data-science workflow beyond my studies. I believe it is paramount to be well-rounded and knowledgeable in many disciplines, that way I can maximize my contributions to the team. 
+Hi! My name is Brian Forristal. Welcome to my personal website. Here, I host various coded examples of data science and statistics applications I've learned during my time at the University of Pittsburgh. By no means is this an exhaustive list of all my work, but a carely curated subset of key ideas and methods I find to be the most intuitive and useful. 
+
+I am currently a full-time student at the University of Pittsburgh and will be completing my BS in Statistics in the spring of 2021. Prior to going back to university, I gained valuable work and life experience in the telcommunications industry. For more details, checkout my 
+
+I believe it is paramount to be well-rounded and knowledgeable in many disciplines, that way I can maximize my contributions to the team. 
 
 ## Goals
 1. Be the best dad I can be :)
@@ -42,3 +46,6 @@ My name is Brian Forristal and welcome to my personal website. Here, I host vari
 
 </a>
 </div>
+
+### My Daughter, Sofia Mae Forristal
+![](images/ProfilePic.png)
