@@ -4,7 +4,7 @@ navbar:
   left:
     - text: "About Me"
       href: index.html
-    - text: "Rbasics"
+    - text: "R Basics"
       href: Rbasics.html
     - text: "Bayesian Statistics"
       href: 1651_HW2.html

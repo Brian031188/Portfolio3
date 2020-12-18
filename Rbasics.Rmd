@@ -1,5 +1,5 @@
 ---
-title: "Rbasics"
+title: "R Basics"
 output:
   html_document:
     toc: true
