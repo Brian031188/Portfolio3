@@ -32,10 +32,12 @@ I believe it is paramount to be well-rounded and knowledgeable in many disciplin
 2. Hoping to find a meaningful job in data science and statistics where I can make positive change.
 3. Change the world!
 
-# Resources
+# Credentials
 LinkedIn Profile: [Brian Forristal](https://www.linkedin.com/in/brian-forristal-b84088a6/)
 
 Resume: [Click Here](https://github.com/Brian031188/Portfolio3/blob/master/Resume/CV_BrianForristal.pdf)
+
+Unofficial Transcript: [Fall 2020](https://github.com/Brian031188/Portfolio3/blob/master/Transcript/PITT_TSRPT.pdf)
 
 # Academic Papers
 Title: 
